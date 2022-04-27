@@ -1,9 +1,13 @@
 import os
 import random
+import time
 
-numPlayers = 9 # will attempt to fit this many tribes onto the map space
+tick = time.perf_counter()
+
+
+numPlayers = 4 # will attempt to fit this many tribes onto the map space
 mapData = []
-worldSize = 11
+worldSize = 11 # must be greater than or equal to 5
 tribeData = {}
 tribeMap = []
 viableLines = []
@@ -14,7 +18,7 @@ for i in range(2, worldSize - 2):
 
 
 #Create a 2D list of (square) size "worldSize" and fill it with "▒" (chr(9617),chr(9608))
-if worldSize >= 2:
+if worldSize >= 5:
     for y in range(worldSize):
         mapData.append([])
         for x in range(worldSize):
@@ -38,6 +42,9 @@ if worldSize >= 2:
             tribeMap[y][-1] = "!"
 
         
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
+
 
 def clearMapData(): ## untested: for development, not gameplay
     for y in range(len(mapData)):
@@ -73,7 +80,7 @@ def tribeSetup():
         randY = random.choice(viableLines)
         randX = random.choice(tribeMap[randY][2:-2])
         #print("random assigned")
-        print(randY, randX)
+        ###print(randY, randX)
         defaultRadius = 1
         radius = defaultRadius
         
@@ -100,7 +107,7 @@ def tribeSetup():
                             for x in range(3):
                                 mapData[-1 + (randY) + y][-1 + randX + x] = chr(9617)
                         mapData[randY][randX] = chr(9608)
-                        tribeData[len(tribeData)] = {"x": randX, "y": randY, "name": "Imperius"}
+                        tribeData[len(tribeData)] = {"x": randX, "y": randY, "name": "Imperius", "color": BLUE}
                     else:
                         tribeSetup()
                 else:
@@ -148,10 +155,11 @@ def tribeSetup():
 
 
 def drawMap():
+    color = '\033[94m'
     viewMap = ""
     for y in range(len(mapData)):
         for x in range(len(mapData[y])):
-            viewMap += mapData[y][x] * 2
+            viewMap += (mapData[y][x] * 2)
         viewMap += "\n"
     print(viewMap)
 
@@ -167,16 +175,25 @@ def drawTribeMap():
 
 ### Start running code here!
 #drawMap() ## draw the empty map
+cls()
 n = ""
 while n != "q":
     for i in range(numPlayers):
+        #time.sleep(0.2)
+        #cls()
         tribeSetup()
         #drawMap()
         #drawTribeMap()
     n = "q" #input()
 
-print("done")
 drawMap()
+print("done")
+
+tock = time.perf_counter()
+
+print(f"Time elapsed: {tock - tick:0.4f}")
+
+#drawMap()
 #drawTribeMap()
 
 
